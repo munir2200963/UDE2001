@@ -25,44 +25,86 @@ function shuffle(array) {
 }
 function App() {
     const levels = {
-        levelOne: shuffle(levelOne),
-        levelTwo: shuffle(levelTwo),
-        levelThree: shuffle(levelThree),
+        1: shuffle(levelOne),
+        2: shuffle(levelTwo),
+        3: shuffle(levelThree),
     };
     const [gameState] = React.useState(levels);
-    const [currLevel, setLevel] = React.useState(Object.keys(levels)[0]);
+    const [currLevel, setLevel] = React.useState(1);
     const [currCard, setCurrCard] = React.useState(levels[currLevel][0]);
     const [cardHistory, setCardHistory] = React.useState([]);
+    const [accumulator, setAccumulator] = React.useState(0);
+
     function handleChangeLevel(newLevel) {
         setLevel(newLevel);
-        if (gameState[newLevel].length === 1) {
+        const levelKey = 'level' + newLevel.charAt(0).toUpperCase() + newLevel.slice(1); // Convert integer to string format used in gameState
+        if (gameState[levelKey].length === 1) {
             const finalMessage = "You have finished this level!";
             setCurrCard(finalMessage);
-        }
-        else {
-            setCurrCard(gameState[newLevel][0]);
-        }
-    }
-    const buttons = Object.keys(levels).map((level) => (_jsx("button", { className: clsx(levelButtonStyles, { [selectedLevelStyles]: level === currLevel }), onClick: () => handleChangeLevel(level), children: level.split(/(?=[A-Z])/).join(" ") }, level)));
-    function handleNextCard() {
-        const finalMessage = "You have finished this level!";
-        if (gameState[currLevel].length === 1) {
-            if (currCard === finalMessage) {
-                return;
-            }
-            else {
-                const tempHistory = [currCard, ...cardHistory];
-                setCardHistory(tempHistory);
-                setCurrCard(finalMessage);
-            }
-        }
-        else {
-            const tempHistory = [currCard, ...cardHistory];
-            setCardHistory(tempHistory);
-            gameState[currLevel].shift();
-            setCurrCard(gameState[currLevel][0]);
+        } else {
+            setCurrCard(gameState[levelKey][0]);
         }
     }
-    return (_jsxs("div", { className: appStyles, children: [_jsx(Credits, {}), _jsx("div", { className: levelsStyles, children: buttons }), _jsxs("div", { className: questionStyles, children: [_jsx("div", { className: titleStyles, children: "WE'RE NOT REALLY DIFFERENT." }), _jsx(Card, { styleName: bigCardStyles, question: currCard }), _jsx("button", { className: nextCardButtonStlyes, onClick: () => handleNextCard(), children: "next card" })] }), _jsx(CardHistory, { cardHistory: cardHistory })] }));
+
+    function getLevelLabel(level) {
+        const levelLabels = {
+            1: "Level One",
+            2: "Level Two",
+            3: "Level Three"
+        };
+        return levelLabels[level];
+    }
+    
+    const buttons = Object.keys(levels).map((level) => (
+        _jsx("button", {
+            className: clsx(levelButtonStyles, { [selectedLevelStyles]: parseInt(level) === currLevel }),
+            onClick: () => handleChangeLevel(parseInt(level)), // Ensure we're passing integer values
+            children: getLevelLabel(level)
+        }, level)
+    ));
+    
+    
+function handleNextCard() {
+    setAccumulator(prev => prev + currLevel); // Update accumulator
+
+    const finalMessage = "You have finished this level!";
+    const levelKey = 'level' + currLevel; // Convert integer to string format used in gameState
+    if (gameState[levelKey].length === 1) {
+        if (currCard === finalMessage) {
+            return;
+        } else {
+            setCurrCard(finalMessage);
+        }
+    } else {
+        gameState[levelKey].shift();
+        setCurrCard(gameState[levelKey][0]);
+    }
+}
+
+    return (
+        _jsxs("div", {
+            className: appStyles,
+            children: [
+                _jsx(Credits, {}),
+                _jsx("div", { className: levelsStyles, children: buttons }),
+                _jsxs("div", {
+                    className: questionStyles,
+                    children: [
+                        _jsx("div", {
+                            className: titleStyles,
+                            children: "WE'RE NOT REALLY DIFFERENT."
+                        }),
+                        _jsx(Card, { styleName: bigCardStyles, question: currCard }),
+                        _jsx("button", {
+                            className: nextCardButtonStlyes,
+                            onClick: () => handleNextCard(),
+                            children: "next turn"
+                        })
+                    ]
+                }),
+                _jsx(CardHistory, { cardHistory: cardHistory, score: accumulator }) 
+            ]
+        })
+    );
 }
 export default App;
