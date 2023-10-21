@@ -46,11 +46,11 @@ export const playerName = style({
     color: primaryAccent,
     fontSize: 24,
     fontWeight: 800,
-    flex: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingLeft: '10px' // Add padding to give it some space from the left border
+    paddingLeft: '15px', // Add padding to give it some space from the left border
+    paddingTop: '15px',
 });
 
 export const playerScore = style({
@@ -58,11 +58,11 @@ export const playerScore = style({
     color: primaryAccent,
     fontSize: 24,
     fontWeight: 800,
-    flex: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingRight: '10px' // Add padding to give it some space from the right border
+    paddingRight: '15px', // Add padding to give it some space from the right border
+    paddingTop: '15px',
 });
 
 
@@ -72,10 +72,49 @@ export const playerContainerStyles = style({
     maxHeight: "30rem",
     width: "100%",
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",  // Changed to column
     alignItems: "center",
-    justifyContent: "space-between",
     margin: 10,
     borderRadius: 15,
     border: `solid 2px ${primaryAccent}`,
+    overflowY: "auto"  // Added to handle scrolling
 });
+
+export const inputContainer = style({
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '10px',  // Adjusted to separate it from the list
+    width: '100%'
+});
+
+
+export const inputField = style({
+    textTransform: "uppercase",
+    padding: '8px 12px',
+    border: `2px solid ${primaryAccent}`,
+    borderRadius: '8px',
+    marginRight: '10px', // Space between input and button
+    width: '70%', // Take up 70% of the available width
+    fontSize: '16px',
+    outline: 'none',
+});
+
+export const addButton = style({
+    textTransform: "uppercase",
+    backgroundColor: primaryAccent,
+    padding: '8px 15px',
+    fontSize: '16px',
+    fontWeight: 800,
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+    color: 'white', // White text on a colored background
+    transition: 'background-color 0.3s',
+
+    ':hover': { // A subtle hover effect
+        backgroundColor: '#d12b2b', // Slightly darker shade for the hover state
+    }
+});
+
