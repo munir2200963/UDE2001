@@ -65,6 +65,9 @@ export const playerScore = style({
     paddingTop: '15px',
 });
 
+export const inactivePlayer = style({
+    color: 'black',
+});
 
 export const playerContainerStyles = style({
     height: "100%",

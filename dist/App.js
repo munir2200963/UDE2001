@@ -34,16 +34,23 @@ function App() {
     const [currCard, setCurrCard] = React.useState(levels[currLevel][0]);
     const [cardHistory, setCardHistory] = React.useState([]);
     const [accumulator, setAccumulator] = React.useState(0);
+    const [currentTurn, setCurrentTurn] = React.useState(0);
+    const [nextTurnClicked, setNextTurnClicked] = React.useState(false);
 
     function handleChangeLevel(newLevel) {
         setLevel(newLevel);
-        const levelKey = 'level' + newLevel.charAt(0).toUpperCase() + newLevel.slice(1); // Convert integer to string format used in gameState
-        if (gameState[levelKey].length === 1) {
+        if (newLevel === currLevel) {
+            return; // Return early if the level hasn't changed.
+        }
+        if (gameState[newLevel].length === 1) {
             const finalMessage = "You have finished this level!";
             setCurrCard(finalMessage);
         } else {
-            setCurrCard(gameState[levelKey][0]);
+            const updatedState = { ...gameState };
+            updatedState[newLevel].shift();
+            setCurrCard(updatedState[newLevel][0]);
         }
+        setNextTurnClicked(false);
     }
 
     function getLevelLabel(level) {
@@ -64,22 +71,23 @@ function App() {
     ));
     
     
-function handleNextCard() {
-    setAccumulator(prev => prev + currLevel); // Update accumulator
-
-    const finalMessage = "You have finished this level!";
-    const levelKey = 'level' + currLevel; // Convert integer to string format used in gameState
-    if (gameState[levelKey].length === 1) {
-        if (currCard === finalMessage) {
-            return;
+    function handleNextCard() {
+        setAccumulator(prev => prev + currLevel); // Update accumulator
+        setCurrentTurn(prev => prev + 1); // Update next turn
+        const finalMessage = "You have finished this level!";
+        if (gameState[currLevel].length === 1) {
+            if (currCard === finalMessage) {
+                return;
+            } else {
+                setCurrCard(finalMessage);
+            }
         } else {
-            setCurrCard(finalMessage);
+            const updatedState = { ...gameState };
+            updatedState[currLevel].shift();
+            setCurrCard(updatedState[currLevel][0]);
         }
-    } else {
-        gameState[levelKey].shift();
-        setCurrCard(gameState[levelKey][0]);
+        setNextTurnClicked(true);
     }
-}
 
     return (
         _jsxs("div", {
@@ -102,7 +110,7 @@ function handleNextCard() {
                         })
                     ]
                 }),
-                _jsx(CardHistory, { cardHistory: cardHistory, score: accumulator }) 
+                _jsx(CardHistory, { cardHistory: cardHistory, score: accumulator, currentTurn: currentTurn, currLevel: currLevel, nextTurnClicked: nextTurnClicked})
             ]
         })
     );

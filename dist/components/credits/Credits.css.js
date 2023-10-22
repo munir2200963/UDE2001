@@ -6,7 +6,7 @@ export const creditStyles = style({
     backgroundColor: "#fff",
     height: "auto",
     textAlign: "left",
-    maxHeight: 13,
+    maxHeight: 20,
     width: 175,
     padding: 4,
     top: 30,
